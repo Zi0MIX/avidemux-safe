@@ -1,0 +1,14 @@
+{
+  "all_seven_frames": 5047,
+  "all_pixels_identical": true,
+  "reopen_resave_identical": true,
+  "bidirectional_seek": true,
+  "codec_tag": "avc3",
+  "moov_offset": 32,
+  "benchmark_video_sha256": "bc43fa481cc037b141a58df915fdbe105be636c4ed6684b5b409b09fc2b987db",
+  "benchmark_AAC_sha256": "c9afb64a0473bb0c47452114b084ae3df3502ed18ed75e05da18d159f235d450",
+  "benchmark_packets": {
+    "video": 144200,
+    "audio": 103100
+  }
+}

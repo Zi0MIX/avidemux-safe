@@ -1,0 +1,32 @@
+[
+  {
+    "file": "IEditor.h",
+    "upstream_url": "https://raw.githubusercontent.com/mean00/avidemux2/2.8.1/avidemux/common/ADM_editor/include/IEditor.h",
+    "sha256": "13154810acd173baf0bac3ad718e44b729fc28ddac9f1ae415fa80be6830fa20"
+  },
+  {
+    "file": "ADM_Video.h",
+    "upstream_url": "https://raw.githubusercontent.com/mean00/avidemux2/2.8.1/avidemux_core/ADM_coreDemuxer/include/ADM_Video.h",
+    "sha256": "5b3698823743d2a3f72591f414be6ef6e54f30d4b4bb2720b4ca0158084d10c1"
+  },
+  {
+    "file": "ADM_muxer.h",
+    "upstream_url": "https://raw.githubusercontent.com/mean00/avidemux2/2.8.1/avidemux_core/ADM_coreMuxer/include/ADM_muxer.h",
+    "sha256": "2276fe28a3a59af01a60f0c1c83ef0553a1f00e045c98e6c37e631bec5e19ba7"
+  },
+  {
+    "file": "ADM_muxerInternal.h",
+    "upstream_url": "https://raw.githubusercontent.com/mean00/avidemux2/2.8.1/avidemux_core/ADM_coreMuxer/include/ADM_muxerInternal.h",
+    "sha256": "733acb61115c561fb6639a1df91873693ccef0e42c1c047e40463bb20c4db859"
+  },
+  {
+    "file": "ADM_mp4Analyzer.cpp",
+    "upstream_url": "https://raw.githubusercontent.com/mean00/avidemux2/2.8.1/avidemux_plugins/ADM_demuxers/Mp4/ADM_mp4Analyzer.cpp",
+    "sha256": "9c090122132710a14688e9b9c599592268ad33a3536112cad5c9d1ce1081fb16"
+  },
+  {
+    "file": "ADM_bitstream.h",
+    "upstream_url": "https://raw.githubusercontent.com/mean00/avidemux2/2.8.1/avidemux_core/ADM_coreUtils/include/ADM_bitstream.h",
+    "sha256": "3a25b4e5abf759f78acc42eefe9c95de3bfc72c80a844d589daec650d5e8c158"
+  }
+]

@@ -1,0 +1,122 @@
+{
+  "source_sha256": "7690e748ba1b1bcd12baf193c6764ae0ef3b6e1efc88a789d6ec735cd5eab4c9",
+  "bundled_DLL_sha256": "ed924ed19d95f84046257aa24647fd8ca4e98fd23e04196e9839d4c3c713fc98",
+  "fresh_build_DLL_sha256": "7a88a740e281c7a9a2d13d2f28900d36c00f45b61277995f88c63755e20e6dab",
+  "compiler": "Zig 0.15.2",
+  "ffmpeg": "8.1.1",
+  "fresh_build": {
+    "combined_frames": 2163,
+    "all_pixels_match": true,
+    "consecutive_saves": 4,
+    "reopen_resave_pixels_match": true,
+    "combined_mp4": {
+      "ftyp": 0,
+      "moov": 32,
+      "video_entries": 1,
+      "video_tag": "avc3",
+      "free": 64407,
+      "mdat": 64415
+    },
+    "parts": [
+      {
+        "part": "part-0.mp4",
+        "frames": 720,
+        "pixels_match": true,
+        "mp4": {
+          "ftyp": 0,
+          "moov": 32,
+          "video_entries": 1,
+          "video_tag": "avc3",
+          "free": 24959,
+          "mdat": 24967
+        }
+      },
+      {
+        "part": "part-1.mp4",
+        "frames": 721,
+        "pixels_match": true,
+        "mp4": {
+          "ftyp": 0,
+          "moov": 32,
+          "video_entries": 1,
+          "video_tag": "avc3",
+          "free": 17399,
+          "mdat": 17407
+        }
+      },
+      {
+        "part": "part-2.mp4",
+        "frames": 720,
+        "pixels_match": true,
+        "mp4": {
+          "ftyp": 0,
+          "moov": 32,
+          "video_entries": 1,
+          "video_tag": "avc3",
+          "free": 24973,
+          "mdat": 24981
+        }
+      }
+    ]
+  },
+  "bundled_binary": {
+    "combined_frames": 2163,
+    "all_pixels_match": true,
+    "consecutive_saves": 4,
+    "reopen_resave_pixels_match": true,
+    "combined_mp4": {
+      "ftyp": 0,
+      "moov": 32,
+      "video_entries": 1,
+      "video_tag": "avc3",
+      "free": 64407,
+      "mdat": 64415
+    },
+    "parts": [
+      {
+        "part": "part-0.mp4",
+        "frames": 720,
+        "pixels_match": true,
+        "mp4": {
+          "ftyp": 0,
+          "moov": 32,
+          "video_entries": 1,
+          "video_tag": "avc3",
+          "free": 24959,
+          "mdat": 24967
+        }
+      },
+      {
+        "part": "part-1.mp4",
+        "frames": 721,
+        "pixels_match": true,
+        "mp4": {
+          "ftyp": 0,
+          "moov": 32,
+          "video_entries": 1,
+          "video_tag": "avc3",
+          "free": 17399,
+          "mdat": 17407
+        }
+      },
+      {
+        "part": "part-2.mp4",
+        "frames": 720,
+        "pixels_match": true,
+        "mp4": {
+          "ftyp": 0,
+          "moov": 32,
+          "video_entries": 1,
+          "video_tag": "avc3",
+          "free": 24973,
+          "mdat": 24981
+        }
+      }
+    ]
+  },
+  "python_syntax_check": true,
+  "local_documentation_links_check": true,
+  "personal_paths_removed": true,
+  "source_preserved_verbatim": true,
+  "application_dependency_bundled": false
+}

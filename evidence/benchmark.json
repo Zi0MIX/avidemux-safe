@@ -1,0 +1,56 @@
+{
+  "runs": [
+    {
+      "mode": "baseline",
+      "seconds": 1.2321310000043013,
+      "bytes": 429362995,
+      "path": "0-baseline.mp4",
+      "native_stats": []
+    },
+    {
+      "mode": "injected",
+      "seconds": 1.2200044999990496,
+      "bytes": 429374995,
+      "path": "1-injected.mp4",
+      "native_stats": [
+        "[SafeMP4] packets=144200 injected_IDRs=300 failed=0"
+      ]
+    },
+    {
+      "mode": "injected",
+      "seconds": 1.2048722000035923,
+      "bytes": 429374995,
+      "path": "2-injected.mp4",
+      "native_stats": [
+        "[SafeMP4] packets=144200 injected_IDRs=300 failed=0"
+      ]
+    },
+    {
+      "mode": "baseline",
+      "seconds": 1.2120336000007228,
+      "bytes": 429362995,
+      "path": "3-baseline.mp4",
+      "native_stats": []
+    },
+    {
+      "mode": "baseline",
+      "seconds": 1.2895540999961668,
+      "bytes": 429362995,
+      "path": "4-baseline.mp4",
+      "native_stats": []
+    },
+    {
+      "mode": "injected",
+      "seconds": 1.3205058000021381,
+      "bytes": 429374995,
+      "path": "5-injected.mp4",
+      "native_stats": [
+        "[SafeMP4] packets=144200 injected_IDRs=300 failed=0"
+      ]
+    }
+  ],
+  "median_seconds": {
+    "baseline": 1.2321310000043013,
+    "injected": 1.2200044999990496
+  }
+}

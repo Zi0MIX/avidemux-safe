@@ -1,0 +1,38 @@
+[
+  {
+    "case": "full",
+    "frames": 981,
+    "identical_pixels": true,
+    "identical_AAC_and_timestamps": true
+  },
+  {
+    "case": "first",
+    "frames": 239,
+    "identical_pixels": true,
+    "identical_AAC_and_timestamps": true
+  },
+  {
+    "case": "youtube_only",
+    "frames": 249,
+    "identical_pixels": true,
+    "identical_AAC_and_timestamps": true
+  },
+  {
+    "case": "cross",
+    "frames": 610,
+    "identical_pixels": true,
+    "identical_AAC_and_timestamps": true
+  },
+  {
+    "case": "later_part",
+    "frames": 491,
+    "identical_pixels": true,
+    "identical_AAC_and_timestamps": true
+  },
+  {
+    "case": "nonkey_end",
+    "frames": 180,
+    "identical_pixels": true,
+    "identical_AAC_and_timestamps": true
+  }
+]

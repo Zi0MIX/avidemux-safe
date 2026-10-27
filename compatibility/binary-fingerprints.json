@@ -1,0 +1,7 @@
+{
+  "avidemux.exe": "2102859a09c64586aa6e3d2ab7dea753c3ac8f3cd640345d9d2edc107baa0a4d",
+  "avidemux_cli.exe": "7abf1a406ef27f82c121189939be21a8e15908877b4fb40ed37a0208a74828dd",
+  "plugins/muxers/libADM_mx_mp4.dll": "e2d9cbf77b4094b90598b6727a01d6d6af397463aaffffba7451620ded98b8c7",
+  "plugins/demuxers/libADM_dm_mp4.dll": "90945ebeaa380c11d7efe5403859c7b3b7863c105843b3913fd555f2710de028",
+  "ADM_coreMuxer6.dll": "218dee52a9cf2fab012f2fab468981ebb5194ad026f8a024fa0392eabeaf1ebb"
+}

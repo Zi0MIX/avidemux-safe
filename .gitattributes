@@ -1,0 +1,11 @@
+* text=auto
+*.py text eol=lf
+*.c text eol=lf
+*.h text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.dll binary
+# Preserve the imported source and upstream snapshots byte-for-byte.
+/src/safe_mp4.c -text
+/docs/abi-reference/*.h -text
+/docs/abi-reference/*.cpp -text

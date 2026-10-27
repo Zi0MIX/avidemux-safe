@@ -1,0 +1,8 @@
+__pycache__/
+*.py[cod]
+/build/
+/portable/
+/portable-built/
+/test-output/
+.zig-cache/
+zig-out/
