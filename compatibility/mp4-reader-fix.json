@@ -1,0 +1,18 @@
+{
+  "reader": "plugins/demuxers/libADM_dm_mp4.dll",
+  "sha256": "90945ebeaa380c11d7efe5403859c7b3b7863c105843b3913fd555f2710de028",
+  "pe_timestamp": 1663416777,
+  "pe_size_of_image": 143360,
+  "parse_moof_rva": "0x8460",
+  "patch_rva": "0x84c6",
+  "expected_context": "44 8b 43 08 48 8d 54 24 20 48 8b cf e8 84 8f ff ff",
+  "replacement_byte": "4c",
+  "before": "mov r8d, dword ptr [rbx + 8]",
+  "after": "mov r8, qword ptr [rbx + 8]",
+  "callee_thunk_rva": "0x145b",
+  "parse_traf_rva": "0x8530",
+  "expected_callee": "4c 89 44 24 18",
+  "callee_instruction": "mov qword ptr [rsp + 0x18], r8",
+  "scope": "Loaded process only. The original MP4 reader and media files on disk remain unchanged.",
+  "upstream_cause": "adm_atom::getStartPos returns uint32_t for int64_t _atomStart. MP4Header::parseMoof passes this to parseTraf's uint64_t moofStart."
+}

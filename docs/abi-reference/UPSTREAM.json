@@ -28,5 +28,15 @@
     "file": "ADM_bitstream.h",
     "upstream_url": "https://raw.githubusercontent.com/mean00/avidemux2/2.8.1/avidemux_core/ADM_coreUtils/include/ADM_bitstream.h",
     "sha256": "3a25b4e5abf759f78acc42eefe9c95de3bfc72c80a844d589daec650d5e8c158"
+  },
+  {
+    "file": "ADM_atom.h",
+    "upstream_url": "https://raw.githubusercontent.com/mean00/avidemux2/2.8.1/avidemux_plugins/ADM_demuxers/Mp4/ADM_atom.h",
+    "sha256": "9954b97efc89cc02e54b966eae1f87e003e7639656aefd341e6bd6476b8c5ddc"
+  },
+  {
+    "file": "ADM_mp4Fragments.cpp",
+    "upstream_url": "https://raw.githubusercontent.com/mean00/avidemux2/2.8.1/avidemux_plugins/ADM_demuxers/Mp4/ADM_mp4Fragments.cpp",
+    "sha256": "1b8f28e983c0309d6cef3ac287e83d242a4764c7013ba1f5dc0b095a0df8d5f5"
   }
 ]

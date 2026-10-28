@@ -1,0 +1,136 @@
+{
+  "version": "0.1.1",
+  "date": "2026-10-28",
+  "plugin_sha256": "ed294edde1d2af416b5ff4cc83de3f0ee24717a8eb8d10d2dfbd1436c6af910e",
+  "original_plugin_sha256": "ed924ed19d95f84046257aa24647fd8ca4e98fd23e04196e9839d4c3c713fc98",
+  "failure": {
+    "source_cut_us": 2895699999,
+    "first_picture_nal_type": 1,
+    "recovery_point_sei": true,
+    "first_packet_keyframe_flag": true,
+    "original_packets_seen": 1,
+    "original_frames_written": 0,
+    "original_failed": true
+  },
+  "packet_hook_regressions": {
+    "recovery_start": true,
+    "recovery_source_transition": true,
+    "idr_start": true,
+    "existing_headers_unchanged": true,
+    "ordinary_packets_unchanged": true,
+    "non_keyframe_start_error": true,
+    "malformed_nal_error": true,
+    "full_buffer_error": true,
+    "missing_timestamp_error": true
+  },
+  "recovery_export": {
+    "frames": 719,
+    "first_picture_nal_type": 1,
+    "pixels_match_native": true,
+    "reopen_resave_pixels_match": true,
+    "mp4": {
+      "ftyp": 0,
+      "moov": 32,
+      "video_entries": 1,
+      "video_tag": "avc3",
+      "free": 7672,
+      "mdat": 7680
+    }
+  },
+  "gui_executable": {
+    "frames": 719,
+    "pixels_match_native": true,
+    "failed": false
+  },
+  "append_smoke": {
+    "combined_frames": 2163,
+    "all_pixels_match": true,
+    "consecutive_saves": 4,
+    "reopen_resave_pixels_match": true,
+    "combined_mp4": {
+      "ftyp": 0,
+      "moov": 32,
+      "video_entries": 1,
+      "video_tag": "avc3",
+      "free": 51616,
+      "mdat": 51624
+    },
+    "parts": [
+      {
+        "part": "part-0.mp4",
+        "frames": 721,
+        "pixels_match": true,
+        "mp4": {
+          "ftyp": 0,
+          "moov": 32,
+          "video_entries": 1,
+          "video_tag": "avc3",
+          "free": 17368,
+          "mdat": 17376
+        }
+      },
+      {
+        "part": "part-1.mp4",
+        "frames": 721,
+        "pixels_match": true,
+        "mp4": {
+          "ftyp": 0,
+          "moov": 32,
+          "video_entries": 1,
+          "video_tag": "avc3",
+          "free": 19724,
+          "mdat": 19732
+        }
+      },
+      {
+        "part": "part-2.mp4",
+        "frames": 721,
+        "pixels_match": true,
+        "mp4": {
+          "ftyp": 0,
+          "moov": 32,
+          "video_entries": 1,
+          "video_tag": "avc3",
+          "free": 17380,
+          "mdat": 17388
+        }
+      }
+    ]
+  },
+  "full_export": {
+    "requested_selection_end_us": 42899999668,
+    "video_packets": 2574000,
+    "injected_keyframes": 8809,
+    "failed": false,
+    "audio_tracks": 0,
+    "note": "Audio disabled in the saved user project. Source order and leading trim retained.",
+    "export_plugin_sha256": "3f4198ff8d39f85a1dbce1fad44f14a680dc535036224c9e046f4585a6164788",
+    "export_build_difference": "The later GUI diagnostic guard also suppresses dialogs for --nogui; the packet hook is identical.",
+    "source_packet_counts": [
+      1043396,
+      1530604
+    ],
+    "all_compressed_picture_slices_match": true,
+    "comparison": "SHA-256 of each packet's length-prefixed VCL NAL units",
+    "vcl_sha256": "4c5711063ec430ae64a38de8d318bd337af036a85e7ea464c53e67beb0581334",
+    "bytes": 16328954315,
+    "mp4": {
+      "ftyp": 0,
+      "moov": 32,
+      "video_entries": 1,
+      "video_tag": "avc3",
+      "mdat": 20094060
+    },
+    "duration_seconds": 42899.983333
+  },
+  "source_boundary": {
+    "decoded_frames_around_source_boundary": 600,
+    "all_pixels_match_sources": true,
+    "source_reference_offset_frames": 59
+  },
+  "local_installation": {
+    "installed_plugin_sha256": "ed294edde1d2af416b5ff4cc83de3f0ee24717a8eb8d10d2dfbd1436c6af910e",
+    "updated": true,
+    "windows_uac_approval_pending": false
+  }
+}

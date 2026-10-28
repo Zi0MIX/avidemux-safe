@@ -1,0 +1,203 @@
+{
+  "version": "0.1.2",
+  "date": "2026-10-28",
+  "plugin_sha256": "6cb8c9ece3ef2a686a2c84bdf0c7728bc609edbd74e8ed68625b5bccaf8cceb1",
+  "reader_sha256_on_disk_after_tests": "90945ebeaa380c11d7efe5403859c7b3b7863c105843b3913fd555f2710de028",
+  "compatibility_record": "compatibility/mp4-reader-fix.json",
+  "baseline": {
+    "chunk": 11,
+    "bytes": 5628986152,
+    "exit_code": "0xc0000005",
+    "frames_expected": 862581
+  },
+  "overflow_packet": {
+    "pts_time": "11040.382667",
+    "dts_time": "11040.366000",
+    "size": "72654",
+    "pos": "4312959077",
+    "flags": "K__"
+  },
+  "overflow_bytes": {
+    "4312959077": "0000001c67640020acd1005005bb016a",
+    "17991781": "990da7dff3721665764eca33396777f5"
+  },
+  "corrected_cli": [
+    {
+      "chunk": 11,
+      "bytes": 5628986152,
+      "frames": 862581,
+      "returncode": 0,
+      "source_size_and_mtime_unchanged": true
+    },
+    {
+      "chunk": 18,
+      "bytes": 6200761425,
+      "frames": 825480,
+      "returncode": 0,
+      "source_size_and_mtime_unchanged": true,
+      "uncorrected_cli_not_tested": true
+    }
+  ],
+  "gui_executable": {
+    "mode": "--nogui script automation",
+    "load_chunk": 11,
+    "append_chunk": 18,
+    "returncode": 0,
+    "exports_seen": 2,
+    "packets_written": [
+      721,
+      720
+    ]
+  },
+  "real_export_pixels": [
+    {
+      "chunk": 11,
+      "decoded_frames": 720,
+      "all_pixels_match_source": true,
+      "reference_offset_frames": 359,
+      "reference_start_seconds": 11034.382667
+    },
+    {
+      "chunk": 18,
+      "decoded_frames": 720,
+      "all_pixels_match_source": true,
+      "reference_offset_frames": 359,
+      "reference_start_seconds": 11994.016667
+    }
+  ],
+  "sparse_regression": {
+    "fixture_logical_bytes": 4294970393,
+    "offset_shift": 4294967296,
+    "source_frames": 6,
+    "output_decode_ignores_native_edit_list": true,
+    "exports": [
+      {
+        "executable": "avidemux_cli_portable.exe",
+        "frames": 12,
+        "all_pixels_match": true,
+        "mp4": {
+          "ftyp": 0,
+          "moov": 32,
+          "video_entries": 1,
+          "video_tag": "avc3",
+          "free": 916,
+          "mdat": 924
+        }
+      },
+      {
+        "executable": "avidemux_portable.exe",
+        "frames": 12,
+        "all_pixels_match": true,
+        "mp4": {
+          "ftyp": 0,
+          "moov": 32,
+          "video_entries": 1,
+          "video_tag": "avc3",
+          "free": 916,
+          "mdat": 924
+        }
+      }
+    ]
+  },
+  "native_instruction_tests": {
+    "positions_tested": [
+      0,
+      4294967295,
+      4294967296,
+      4312959077,
+      8589934715
+    ],
+    "exact_signature_refusal": true,
+    "idempotence": true,
+    "page_protection_restored": true,
+    "correct_reader_fingerprint_accepted": true,
+    "unsupported_file_fingerprint_refused": true
+  },
+  "unsupported_reader_startup": {
+    "returncode": 0,
+    "unsupported_reader_refused": true,
+    "reader_on_disk_unchanged": true
+  },
+  "append_export_regression": {
+    "combined_frames": 2163,
+    "all_pixels_match": true,
+    "consecutive_saves": 4,
+    "reopen_resave_pixels_match": true,
+    "combined_mp4": {
+      "ftyp": 0,
+      "moov": 32,
+      "video_entries": 1,
+      "video_tag": "avc3",
+      "free": 51616,
+      "mdat": 51624
+    },
+    "parts": [
+      {
+        "part": "part-0.mp4",
+        "frames": 721,
+        "pixels_match": true,
+        "mp4": {
+          "ftyp": 0,
+          "moov": 32,
+          "video_entries": 1,
+          "video_tag": "avc3",
+          "free": 17368,
+          "mdat": 17376
+        }
+      },
+      {
+        "part": "part-1.mp4",
+        "frames": 721,
+        "pixels_match": true,
+        "mp4": {
+          "ftyp": 0,
+          "moov": 32,
+          "video_entries": 1,
+          "video_tag": "avc3",
+          "free": 19724,
+          "mdat": 19732
+        }
+      },
+      {
+        "part": "part-2.mp4",
+        "frames": 721,
+        "pixels_match": true,
+        "mp4": {
+          "ftyp": 0,
+          "moov": 32,
+          "video_entries": 1,
+          "video_tag": "avc3",
+          "free": 17380,
+          "mdat": 17388
+        }
+      }
+    ]
+  },
+  "recovery_point_regression": {
+    "frames": 719,
+    "first_picture_nal_type": 1,
+    "pixels_match_native": true,
+    "reopen_resave_pixels_match": true,
+    "mp4": {
+      "ftyp": 0,
+      "moov": 32,
+      "video_entries": 1,
+      "video_tag": "avc3",
+      "free": 7672,
+      "mdat": 7680
+    }
+  },
+  "preservation": {
+    "source_recordings_rewritten": false,
+    "managed_collection_replaced_or_promoted": false,
+    "existing_outputs_replaced": false,
+    "full_collection_verified": false,
+    "test_outputs_location": "isolated ignored test-output directory"
+  },
+  "distribution": {
+    "bundled_dll_updated": true,
+    "repository_portable_copies_updated": true,
+    "system_installation_updated": false,
+    "packaged_portable_chunk_11_open_verified": true
+  }
+}

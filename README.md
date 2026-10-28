@@ -6,10 +6,17 @@ from mixed 4K Video Downloader and Twitch Leecher DX H.264 downloads.
 The tested files have matching visible video properties but different H.264
 decoder settings. Ordinary Avidemux Copy exports can retain the wrong settings
 after a source transition. This plugin inserts each source's SPS/PPS headers
-at IDR pictures during the normal export.
+at keyframes during the normal export, including non-IDR recovery points.
 
 It keeps compressed picture slices and audio unchanged. There is no encoding,
 intermediate footage, preparation pass, or repair pass.
+
+Version 0.1.2 also corrects a 32-bit fragment-position truncation in the exact
+supported MP4 reader. Large fragmented files can otherwise crash while
+loading, before export starts. The plugin applies a fingerprinted one-byte
+correction in memory at startup, even when another output format is selected.
+It changes neither media nor the original reader DLL on disk. See
+[the reader fix and its limits](docs/fragmented-mp4.md).
 
 ## Use the included DLL
 
@@ -60,8 +67,9 @@ Then run:
     python setup_portable.py --plugin .\build\libADM_mx_safe_mp4.dll --destination .\portable-built
 
 No Avidemux SDK, full Avidemux rebuild, FFmpeg installation, or Python packages
-are required to compile or set up the plugin. The only C source is
-[src/safe_mp4.c](src/safe_mp4.c).
+are required to compile or set up the plugin. The C implementation is in
+[src/safe_mp4.c](src/safe_mp4.c), with the reader correction in
+[src/mp4_reader_fix.h](src/mp4_reader_fix.h).
 
 The included DLL is the tested binary. Its checksum is in
 [binaries/SHA256SUMS](binaries/SHA256SUMS). A compiler rebuild can have a
@@ -108,6 +116,11 @@ codec, frame structure, or arbitrary H.264 streams.
 See [docs/validation.md](docs/validation.md) and
 [evidence](evidence) for the saved results. An optional repeatable smoke check
 is in [tests/smoke.py](tests/smoke.py). Footage is not included.
+
+Version 0.1.1 fixes a save failure on non-IDR recovery-point keyframes. These
+valid Copy cuts were rejected at the first packet by the original plugin.
+Packet failures now include a specific reason in the log and a GUI error
+message. The focused regression is in [tests/recovery.py](tests/recovery.py).
 
 ## Repository contents
 

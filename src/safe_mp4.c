@@ -11,12 +11,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <wchar.h>
+#include "mp4_reader_fix.h"
 
 #define EXPORT __declspec(dllexport)
 typedef struct {uint32_t len,capacity;uint8_t *data;uint32_t flags,iq,oq;uint64_t pts,dts;} Bits;
 typedef struct {uint64_t start;uint32_t length,width;uint8_t *prefix;} Section;
 typedef struct Proxy {void **vt;void *real;void *video;void **old_vt;void *hook_vt[32];
-    Section *sections;uint32_t count;uint64_t origin,frames,injections;bool failed;char *filename;} Proxy;
+    Section *sections;uint32_t count;uint64_t origin,frames,injections;bool failed;const char *error;char *filename;} Proxy;
 static HMODULE original;
 static Proxy *active;
 static void *proxy_vtable[13];
@@ -28,7 +29,7 @@ static void dirpath(wchar_t *path,const wchar_t *tail){
 }
 static bool load_original(void){
     if(original)return true;wchar_t path[32768];dirpath(path,L"plugins\\muxers\\libADM_mx_mp4.dll");
-    original=LoadLibraryW(path);if(original)protect_legacy_debug_dump();return original!=NULL;
+    original=LoadLibraryW(path);if(original){fix_fragmented_mp4_positions();protect_legacy_debug_dump();}return original!=NULL;
 }
 /* 2.8.1's MP4 reader assumes one SPS when printing avcC. A duplicate SPS
  * makes its diagnostic mixDump length run outside the allocation. Suppress
@@ -124,21 +125,41 @@ static bool live_plan(Proxy *p,void *video){
     }
     return p->count && !p->sections[0].start;
 }
+static bool packet_error(Proxy *p,const char *error,const Bits *b){
+    p->failed=true;p->error=error;
+    fprintf(stderr,"[SafeMP4] ERROR: %s (packet=%llu pts=%llu dts=%llu flags=0x%x bytes=%u capacity=%u)\n",
+        error,(unsigned long long)p->frames,(unsigned long long)b->pts,(unsigned long long)b->dts,b->flags,b->len,b->capacity);
+    return false;
+}
+static void report_error(Proxy *p,const char *fallback){
+    const char *error=p->error?p->error:fallback;
+    fprintf(stderr,"[SafeMP4] ERROR: %s\n",error);
+    /* CLI automation must never wait for a dialog. The GUI otherwise only
+     * reports a generic save failure, hiding the packet rejection reason. */
+    wchar_t exe[32768];GetModuleFileNameW(NULL,exe,32768);
+    if(!wcsstr(exe,L"avidemux_cli") && !wcsstr(GetCommandLineW(),L"--nogui"))
+        MessageBoxA(NULL,error,"MP4 with source headers: save failed",MB_OK|MB_ICONERROR|MB_TASKMODAL);
+}
 static bool hooked_packet(void *video,Bits *b){
     Proxy *p=active;if(!p || p->video!=video)return false;
     bool ok=((bool(*)(void*,Bits*))p->old_vt[1])(video,b);if(!ok)return false;
     bool first=p->frames++==0;
-    if(first){p->origin=b->pts;if(b->pts==UINT64_MAX){p->failed=true;return false;}}
+    if(first){p->origin=b->pts;if(b->pts==UINT64_MAX)return packet_error(p,"The first video packet has no presentation timestamp.",b);}
     if(!first && !(b->flags&0x10))return true;
-    uint32_t pos=0;bool idr=false;
+    uint32_t pos=0;uint8_t picture=0;
+    if(b->len>b->capacity)return packet_error(p,"The video packet exceeds its buffer capacity.",b);
     while(pos+4<=b->len){uint32_t size=be32(b->data+pos);pos+=4;
-        if(!size || size>b->len-pos){p->failed=true;return false;}
+        if(!size || size>b->len-pos)return packet_error(p,"Invalid length-prefixed H.264 NAL unit.",b);
         uint8_t type=b->data[pos]&31;
-        if(type>=1 && type<=5){idr=type==5;break;}pos+=size;
+        if(type>=1 && type<=5){picture=type;break;}pos+=size;
     }
-    if(first && !idr){p->failed=true;return false;}
-    if(!idr)return true;
-    if(b->pts==UINT64_MAX || b->pts<p->origin){p->failed=true;return false;}
+    /* Recovery-point I pictures use non-IDR slices. Avidemux validates Copy
+     * cuts and marks these as keyframes too. Insert headers before all such
+     * pictures, including the first packet; do not impose an IDR-only cut. */
+    if(first && (!picture || (picture!=5 && !(b->flags&0x10))))
+        return packet_error(p,"The selection does not start on a video keyframe. Move marker A to a keyframe.",b);
+    if(!picture)return true;
+    if(b->pts==UINT64_MAX || b->pts<p->origin)return packet_error(p,"A video keyframe has an invalid presentation timestamp.",b);
     uint64_t time=b->pts-p->origin;uint32_t lo=0,hi=p->count;
     while(lo+1<hi){uint32_t mid=lo+(hi-lo)/2;if(p->sections[mid].start<=time+2)lo=mid;else hi=mid;}
     Section *s=p->sections+lo;
@@ -149,7 +170,7 @@ static bool hooked_packet(void *video,Bits *b){
         if(s->length<=b->len-at && !memcmp(b->data+at,s->prefix,s->length))return true;
         at+=size+4;
     }
-    if(b->len>b->capacity || s->length>b->capacity-b->len){p->failed=true;return false;}
+    if(s->length>b->capacity-b->len)return packet_error(p,"The video packet buffer has no room for the source SPS/PPS headers.",b);
     memmove(b->data+s->length,b->data,b->len);memcpy(b->data,s->prefix,s->length);b->len+=s->length;p->injections++;
     return true;
 }
@@ -179,22 +200,23 @@ static bool patch_boxes(FILE *f,uint64_t start,uint64_t end,unsigned depth){
 static bool patch_tag(const char *name){FILE *f=utf8open(name,L"r+b");if(!f)return false;
     _fseeki64(f,0,SEEK_END);uint64_t end=_ftelli64(f);bool ok=patch_boxes(f,0,end,0);fclose(f);return ok;}
 static bool proxy_open(Proxy *p,const char *name,void *video,uint32_t count,void **audio){
-    if(active || !live_plan(p,video))return false;
+    if(active || !live_plan(p,video)){report_error(p,"Could not read the source-header plan from this Avidemux build or selection.");return false;}
     uint32_t fourcc=*(uint32_t*)((uint8_t*)video+28);
-    if(fourcc!=0x34363248 && fourcc!=0x31435641)return false;
+    if(fourcc!=0x34363248 && fourcc!=0x31435641){report_error(p,"MP4 with source headers requires H.264 video in Copy mode.");return false;}
     uint32_t length=0;uint8_t *extra=NULL;
-    if(!((bool(*)(void*,uint32_t*,uint8_t**))vtable(video)[2])(video,&length,&extra) || length<7 || extra[0]!=1 || (extra[4]&3)!=3)return false;
+    if(!((bool(*)(void*,uint32_t*,uint8_t**))vtable(video)[2])(video,&length,&extra) || length<7 || extra[0]!=1 || (extra[4]&3)!=3){report_error(p,"The video needs AVC headers with four-byte NAL lengths.");return false;}
     p->filename=_strdup(name);p->video=video;p->old_vt=vtable(video);
     memcpy(p->hook_vt,p->old_vt,sizeof(p->hook_vt));p->hook_vt[1]=(void*)hooked_packet;
     active=p;*(void ***)video=p->hook_vt;
     bool ok=((bool(*)(void*,const char*,void*,uint32_t,void**))vtable(p->real)[1])(p->real,name,video,count,audio);
-    if(!ok)restore(p);return ok;
+    if(!ok){restore(p);report_error(p,"The native MP4 muxer could not open the output file. See the Avidemux log.");}return ok;
 }
 static bool proxy_save(Proxy *p){bool ok=((bool(*)(void*))vtable(p->real)[2])(p->real);
-    restore(p);printf("[SafeMP4] packets=%llu injected_IDRs=%llu failed=%u\n",(unsigned long long)p->frames,(unsigned long long)p->injections,p->failed);
+    restore(p);printf("[SafeMP4] packets=%llu injected_keyframes=%llu failed=%u\n",(unsigned long long)p->frames,(unsigned long long)p->injections,p->failed);
+    if(p->failed)report_error(p,"Could not prepare a video packet for MP4.");
     return ok && !p->failed;}
 static bool proxy_close(Proxy *p){restore(p);bool ok=((bool(*)(void*))vtable(p->real)[3])(p->real);
-    if(p->filename && !patch_tag(p->filename)){p->failed=true;ok=false;}return ok && !p->failed;}
+    if(p->filename && !patch_tag(p->filename)){if(!p->failed)report_error(p,"Could not set the output MP4 video tag to avc3. Check file access and the Avidemux log.");p->failed=true;ok=false;}return ok && !p->failed;}
 static void *proxy_encoding(Proxy *p){return ((void*(*)(void*))vtable(p->real)[4])(p->real);}
 static void proxy_name(Proxy *p,const char *s){((void(*)(void*,const char*))vtable(p->real)[5])(p->real,s);}
 static bool proxy_init(Proxy *p,const char *s){return ((bool(*)(void*,const char*))vtable(p->real)[6])(p->real,s);}
@@ -216,7 +238,7 @@ EXPORT const char *getDisplayName(void){return "MP4 with source headers (POC)";}
 EXPORT const char *getDescriptor(void){return "H.264 source-header injector, Avidemux 2.8.1 MSVC x64 POC";}
 EXPORT const char *getDefaultExtension(void){return "mp4";}
 EXPORT uint32_t getApiVersion(void){return load_original()?((uint32_t(*)(void))symbol("getApiVersion"))():9;}
-EXPORT uint8_t getVersion(uint32_t *a,uint32_t *b,uint32_t *c){*a=0;*b=1;*c=0;return 1;}
+EXPORT uint8_t getVersion(uint32_t *a,uint32_t *b,uint32_t *c){*a=0;*b=1;*c=2;return 1;}
 EXPORT bool configure(void){return load_original() && ((bool(*)(void))symbol("configure"))();}
 EXPORT bool getConfiguration(void **p){return load_original() && ((bool(*)(void**))symbol("getConfiguration"))(p);}
 EXPORT bool setConfiguration(void *p){return load_original() && ((bool(*)(void*))symbol("setConfiguration"))(p);}

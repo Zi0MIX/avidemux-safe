@@ -1,7 +1,7 @@
 # Validation
 
-The evidence records describe the original tested DLL, not an untested
-reimplementation. The source in src/safe_mp4.c is preserved verbatim.
+The original evidence records describe the v0.1.0 DLL. Later regression
+checks are recorded separately below and in evidence.
 
 ## Original tests
 
@@ -61,3 +61,59 @@ requiring every retained picture to match the contiguous source reference.
 
 Decoding in this test intentionally takes time. It is verification only and
 does not belong in the normal export workflow.
+
+## Recovery-point regression
+
+Version 0.1.1 accepts Avidemux-validated non-IDR recovery-point keyframes.
+The original plugin rejected the first packet of such a cut with only
+`packets=1 injected_IDRs=0 failed=1`, even though ordinary MP4 and MKV could
+save it. The failure occurred before any media was written, independently
+of the selection's length or output size.
+
+The packet-level regression invokes the actual C hook. It covers recovery
+points at the start and at a source transition, IDRs, existing in-band
+headers, unchanged non-keyframes, and explicit packet errors. Assertions
+remain enabled in optimized builds.
+
+    zig cc -target x86_64-windows-gnu -std=c11 -O2 tests/packets.c -o build/test_packets.exe
+    .\build\test_packets.exe
+
+The integration regression needs a caller-supplied H.264 source and the
+microsecond timestamp of a non-IDR recovery-point keyframe. It compares
+every decoded frame with native MP4 Copy output, checks avc3 and the front
+index, and reopens/resaves the result. It verifies that the chosen start
+really uses a non-IDR keyframe. FFprobe must be beside FFmpeg.
+
+    python tests/recovery.py --avidemux-dir .\portable-built --ffmpeg "C:\Tools\ffmpeg.exe" --source "E:\source.mp4" --start-us 2895699999 --work-dir .\test-output\recovery
+
+The recorded 0.1.1 checks compare all 719 decoded frames of a recovery-point
+cut with native MP4 output, including reopen/resave and the GUI executable.
+The append smoke check compares 2,163 decoded frames, four consecutive saves,
+and audio decoding. A real 11h55m selection completed with 2,574,000 video
+packets and an avc3 front index. All 600 decoded frames in a window spanning
+its source transition match the sources. Audio was disabled in that saved
+project. Full-length validation checks compressed picture packets; it does
+not decode the entire 11h55m selection. The SHA-256 of every exported
+packet's length-prefixed picture slices matches the corresponding source
+packet, across all 2,574,000 packets.
+
+See [the regression evidence](../evidence/recovery-point-verification.json).
+
+## Fragment positions above 4 GiB
+
+Version 0.1.2 corrects one truncated fragment-base argument in the exact
+supported reader. The real failing chunk opens with 862,581 frames, and a
+second large chunk opens with 825,480 frames. GUI-executable append and two
+12-second exports pass, with all 720 decoded frames from each selection
+matching the sources beyond 4 GiB. The 2,163-frame append/export smoke check,
+audio decoding, consecutive saves and reopen/resave also pass.
+
+The bounded regression `tests/fragments.py` generates a sparse MP4 and checks
+all stored pictures after shifting fragments by exactly 2**32 bytes. It uses
+both executables. `tests/reader_fix.c` executes the old and corrected machine
+instructions and verifies signature and fingerprint refusal. No real footage
+is needed by these tests.
+
+See [the reader investigation and limits](fragmented-mp4.md) and
+[the saved results](../evidence/fragmented-mp4-verification.json). These tests
+do not verify or replace the full zcutter collection.
